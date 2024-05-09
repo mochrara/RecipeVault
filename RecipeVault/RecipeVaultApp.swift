@@ -11,7 +11,7 @@ import SwiftUI
 struct RecipeVaultApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MenuView()
         }
     }
 }
