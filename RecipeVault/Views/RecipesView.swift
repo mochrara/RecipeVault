@@ -9,8 +9,10 @@ struct RecipesView: View {
     
     var body: some View {
         NavigationView {
-            Text(pageTitle)
-                .navigationTitle(pageTitle)
+            List(Recipe.recipes) { recipe in
+                Text(recipe.name)
+                    .navigationTitle(pageTitle)
+            }
         }
         .navigationViewStyle(.stack)
     }
