@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 
 
@@ -17,7 +18,13 @@ struct Recipe: Identifiable {
     
     /// A static array containing all recipes.
     static let recipes: [Recipe] = [
-        Recipe(name: "Pancakes", img: "pancakes.jpg", description: "Fluffy pancakes", ingredients: "Flour, Milk, Eggs", steps: "Mix ingredients, cook on skillet", timeToComplete: 20, category: Category.breakfast.rawValue, tutorialURL: "http://example.com/pancakes"),
+        Recipe(name: "Chocolate Brownies",
+               img: "https://img.taste.com.au/SmWTQ0aD/w643-h428-cfill-q90/taste/2017/07/nutella-brownie_1980x1320-128834-1.jpg",
+               description: "Fluffy pancakes",
+               ingredients: "Flour, Milk, Eggs",
+               steps: "Mix ingredients, cook on skillet",
+               timeToComplete: 20, category: Category.breakfast.rawValue,
+               tutorialURL: "http://example.com/pancakes"),
         Recipe(name: "Caesar Salad", img: "caesarsalad.jpg", description: "Classic Caesar salad", ingredients: "Lettuce, Croutons, Caesar dressing", steps: "Mix ingredients", timeToComplete: 15, category: Category.salads.rawValue, tutorialURL: "http://example.com/caesarsalad")
         // Add more recipes as needed
     ]
@@ -41,4 +48,5 @@ struct Recipe: Identifiable {
         self.category = category
         self.tutorialURL = tutorialURL
     }
+    
 }
