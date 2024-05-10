@@ -1,8 +1,6 @@
 import Foundation
 import SwiftUI
 
-
-
 /// A view that displays a collection of recipes.
 struct RecipesView: View {
     
@@ -10,15 +8,15 @@ struct RecipesView: View {
     let pageTitle = "My Recipes"
     
     var body: some View {
-        createRecipeView()
+        createRecipesView()
     }
     
     /// Creates the main view for the recipes, encapsulated in a navigation view.
     /// - Returns: A navigation view containing the recipe grid.
-    func createRecipeView() -> some View {
+    func createRecipesView() -> some View {
         return NavigationView {
             ScrollView {
-                createRecipeGrid(recipes: Recipe.recipes)
+                createRecipesGrid(recipes: Recipe.recipes)
             }
             .navigationTitle(pageTitle)
         }
@@ -77,7 +75,7 @@ struct RecipesView: View {
     /// Creates a grid layout for displaying recipe cards.
     /// - Parameter recipes: An array of Recipe instances to display.
     /// - Returns: A view representing the grid of recipe cards.
-    func createRecipeGrid(recipes: [Recipe]) -> some View {
+    func createRecipesGrid(recipes: [Recipe]) -> some View {
         return VStack {
             HStack {
                 // Display count of recipes or a message if none are available
@@ -106,7 +104,9 @@ struct RecipesView: View {
                 // Display a lazy grid of recipe cards
                 LazyVStack(spacing: 15) {
                     ForEach(recipes) { recipe in
-                        createRecipeCard(recipe: recipe)
+                        NavigationLink(destination: createRecipeInfoView(recipe: recipe)) {
+                            createRecipeCard(recipe: recipe)
+                        }
                     }
                 }
                 .padding(.top)
@@ -114,8 +114,62 @@ struct RecipesView: View {
         }
         .padding(.horizontal)
     }
+    
+    
+    /// Creates a detailed view for the selected recipe.
+    /// - Parameter recipe: The Recipe instance to display details for.
+    /// - Returns: A view representing the detailed recipe information.
+    func createRecipeInfoView(recipe: Recipe) -> some View {
+        ScrollView {
+            VStack {
+                AsyncImage(url: URL(string: recipe.img)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+                } placeholder: {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100, alignment: .center)
+                        .foregroundColor(.white.opacity(0.8))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(height: 300)
+                .background(Color.gray.opacity(0.4))
+                
+                VStack(spacing: 30) {
+                    Text(recipe.name)
+                        .padding(.top, 12)
+                        .font(.system(size: 24))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black.opacity(0.9))
+                    
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text(recipe.description)
+                        
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Ingredients Required")
+                                .font(.headline)
+                            Text(recipe.ingredients)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Steps Required")
+                                .font(.headline)
+                            Text(recipe.steps)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal) // Add padding to keep text within safe area
+                }
+                .padding([.leading, .trailing], 16) // Ensure padding is added to leading and trailing sides
+            }
+        }
+        .ignoresSafeArea(edges: .top)
+    }
 }
-
 
 /// A preview provider for the RecipesView.
 struct RecipesView_Previews: PreviewProvider {
