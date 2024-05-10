@@ -12,6 +12,7 @@ struct RecipesFormView: View {
             Text(pageTitle)
                 .navigationTitle(pageTitle)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

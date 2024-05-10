@@ -12,6 +12,7 @@ struct SettingsView: View {
             Text(pageTitle)
                 .navigationTitle(pageTitle)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

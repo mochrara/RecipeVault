@@ -14,6 +14,7 @@ struct FavouriteRecipesView: View {
                 .padding()
                 .navigationTitle(pageTitle)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

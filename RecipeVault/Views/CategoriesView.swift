@@ -5,13 +5,14 @@ import SwiftUI
 
 struct CategoriesView: View {
     
-    let pageTitle = "Recipe Categories"
+    let pageTitle = "Categories"
     
     var body: some View {
         NavigationView {
             Text(pageTitle)
                 .navigationTitle(pageTitle)
         }
+        .navigationViewStyle(.stack)
     }
 }
 
