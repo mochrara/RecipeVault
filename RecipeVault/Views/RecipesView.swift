@@ -1,8 +1,22 @@
-//
-//  RecipesView.swift
-//  RecipeVault
-//
-//  Created by SR71 on 10/5/2024.
-//
-
 import Foundation
+import SwiftUI
+
+
+
+struct RecipesView: View {
+    
+    let pageTitle = "Recipes"
+    
+    var body: some View {
+        NavigationView {
+            Text(pageTitle)
+                .navigationTitle(pageTitle)
+        }
+    }
+}
+
+struct RecipesView_Previews: PreviewProvider {
+    static var previews: some View {
+        RecipesView()
+    }
+}
