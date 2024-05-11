@@ -3,7 +3,8 @@ import Foundation
 
 
 /// Represents different categories for recipes in the application.
-enum Category: String {
+enum Category: String, CaseIterable, Identifiable {
+    var id: String {self.rawValue}
     /// Breakfast category
     case breakfast = "Breakfast"
     /// Lunch category

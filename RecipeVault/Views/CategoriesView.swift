@@ -9,12 +9,44 @@ struct CategoriesView: View {
     
     var body: some View {
         NavigationView {
-            Text(pageTitle)
-                .navigationTitle(pageTitle)
+            createCategoriesView()
+            .navigationTitle(pageTitle)
         }
         .navigationViewStyle(.stack)
     }
+    
+    
+    func createCategoriesView() -> some View {
+        return VStack {
+            Text("Recipes")
+            List {
+                ForEach(Category.allCases) { category in
+                    NavigationLink {
+                        ScrollView {
+                            RecipesView().createRecipesGrid(
+                                recipes: Recipe.recipes.filter{ $0.category == getCategoryName(category)},
+                                noRecipesMessage: "No recipes available for the '\(getCategoryName(category))' category."
+                            )
+                        }
+                        .navigationTitle(getCategoryName(category))
+                    }
+                    label: {
+                        Text(getCategoryName(category))
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    
+    func getCategoryName(_ category: Category) -> String {
+        return category.rawValue
+    }
+    
 }
+
+
 
 struct CategoriesView_Previews: PreviewProvider {
     static var previews: some View {

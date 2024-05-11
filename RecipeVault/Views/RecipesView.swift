@@ -18,7 +18,10 @@ struct RecipesView: View {
     func createRecipesView() -> some View {
         return NavigationView {
             ScrollView {
-                createRecipesGrid(recipes: Recipe.recipes)
+                createRecipesGrid(
+                    recipes: Recipe.recipes,
+                    noRecipesMessage: "Add a new recipe by tapping the '+' button in the top right corner."
+                )
             }
             .navigationTitle(pageTitle)
         }
@@ -77,7 +80,7 @@ struct RecipesView: View {
     /// Creates a grid layout for displaying recipe cards.
     /// - Parameter recipes: An array of Recipe instances to display.
     /// - Returns: A view representing the grid of recipe cards.
-    func createRecipesGrid(recipes: [Recipe]) -> some View {
+    func createRecipesGrid(recipes: [Recipe], noRecipesMessage: String) -> some View {
         return VStack {
             HStack {
                 // Display count of recipes or a message if none are available
@@ -98,7 +101,7 @@ struct RecipesView: View {
             }
             // Show an instruction to add recipes if none exist
             if recipes.isEmpty {
-                Text("Add a new recipe by tapping the '+' button in the top right corner.")
+                Text(noRecipesMessage)
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(.top, 20)
