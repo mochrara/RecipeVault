@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+
+
 /// A view that displays a collection of recipes.
 struct RecipesView: View {
     
@@ -84,13 +86,13 @@ struct RecipesView: View {
                         .font(.headline)
                         .fontWeight(.medium)
                         .opacity(0.7)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.black)
                 } else {
                     Text("Showing \(recipes.count) \(recipes.count > 1 ? "recipes" : "recipe")")
                         .font(.headline)
                         .fontWeight(.medium)
                         .opacity(0.7)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.black)
                 }
                 Spacer()
             }
@@ -116,60 +118,163 @@ struct RecipesView: View {
     }
     
     
-    /// Creates a detailed view for the selected recipe.
-    /// - Parameter recipe: The Recipe instance to display details for.
-    /// - Returns: A view representing the detailed recipe information.
+    /// Creates a scrollable view displaying recipe details.
+    /// - Parameter recipe: The recipe to display.
+    /// - Returns: A view with the recipe's image, name, description, ingredients, and steps.
     func createRecipeInfoView(recipe: Recipe) -> some View {
-        ScrollView {
+        return ScrollView { 
             VStack {
-                AsyncImage(url: URL(string: recipe.img)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity)
-                        .clipped()
-                } placeholder: {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100, alignment: .center)
-                        .foregroundColor(.white.opacity(0.8))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // image management
+                if let imageUrl = URL(string: recipe.img) {
+                    AsyncImage(url: imageUrl) { image in
+                        image
+                            .resizable()
+                            
+                            
+                            .clipped()
+                    } placeholder: {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100, alignment: .center)
+                            .foregroundColor(.white.opacity(0.8))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                    .frame(height: 300)
+                    .background(Color.gray.opacity(0.4))
                 }
-                .frame(height: 300)
-                .background(Color.gray.opacity(0.4))
-                
-                VStack(spacing: 30) {
+                VStack(alignment: .leading, spacing: 15) {
+                    HStack {
+                        // category label
+                        Text(recipe.category.uppercased())
+                            .font(.system(size: 12))
+                            .foregroundColor(.black.opacity(0.5))
+                        Spacer()
+                        // time to complete
+                        HStack {
+                            Image(systemName: "clock")
+                                .resizable()
+                                .frame(width: 17, height: 17)
+                                .foregroundColor(.black.opacity(0.5))
+                            Text("\(recipe.timeToComplete) min")
+                                .font(.system(size: 12))
+                                .foregroundColor(.black.opacity(0.5))
+                        }
+                    }
+                    .padding(.top, 15)
+                    // title
                     Text(recipe.name)
-                        .padding(.top, 12)
                         .font(.system(size: 24))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black.opacity(0.9))
-                    
-                    VStack(alignment: .leading, spacing: 20) {
+                        .foregroundColor(.black.opacity(1))
+                        .bold()
+                        .padding(.bottom, 15)
+                    // recipe body info
+                    VStack(alignment: .leading, spacing: 40) {
+                        // description
                         Text(recipe.description)
-                        
+                            .font(.system(size: 16))
+                            .foregroundColor(.black.opacity(1))
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Divider()
+                            
+                        // ingredients section
                         VStack(alignment: .leading, spacing: 20) {
-                            Text("Ingredients Required")
-                                .font(.headline)
-                            Text(recipe.ingredients)
+                            HStack {
+                                Image(systemName: "fork.knife.circle.fill")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundColor(.black.opacity(0.8))
+                                Text("Ingredients Required")
+                                    .font(.headline)
+                                    .bold()
+                            }
+                            VStack(alignment: .leading, spacing: 20) {
+                                ForEach(recipe.ingredients, id: \.self) { ingredient in
+                                    HStack(alignment: .firstTextBaseline, spacing: 5) {
+                                        Circle()
+                                            .frame(width: 6, height: 6)
+                                            .foregroundColor(.black.opacity(0.7))
+                                            .padding(.bottom, 2)
+                                            .padding(.trailing, 4)
+                                        Text(ingredient)
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.black.opacity(0.7))
+                                            .lineLimit(nil)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    .padding(.leading, 10)
+                                }
+                            }
                         }
-                        
+                        Divider()
+                        // method section
                         VStack(alignment: .leading, spacing: 20) {
-                            Text("Steps Required")
-                                .font(.headline)
-                            Text(recipe.steps)
+                            HStack {
+                                Image(systemName: "list.bullet.circle.fill")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundColor(.black.opacity(0.8))
+                                Text("Method")
+                                    .font(.headline)
+                                    .bold()
+                            }
+                            VStack(alignment: .leading, spacing: 20) {
+                                ForEach(Array(recipe.method.enumerated()), id: \.element) { index, step in
+                                    HStack(alignment: .firstTextBaseline, spacing: 5) {
+                                        Text("\(index + 1).")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.black.opacity(0.7))
+                                            .padding(.bottom, 2)
+                                            .padding(.trailing, 4)
+                                        Text(step)
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.black.opacity(0.7))
+                                            .lineLimit(nil)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    .padding(.leading, 10)
+                                }
+                            }
+                        }
+                        Divider()
+                        // tutorial url (if exists)
+                        if !recipe.tutorialURL.isEmpty, let url = URL(string: recipe.tutorialURL) {
+                            VStack(alignment: .center, spacing: 10) {
+                                HStack {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                        .foregroundColor(.black.opacity(0.8))
+                                    Text("Tutorial URL")
+                                        .font(.headline)
+                                        .bold()
+                                }
+                                HStack {
+                                    Spacer()
+                                    Link(destination: url) {
+                                        Text(recipe.tutorialURL)
+                                            .font(.subheadline)
+                                            .foregroundColor(.blue)
+                                            .underline()
+                                            .multilineTextAlignment(.center)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                            Divider()
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal) // Add padding to keep text within safe area
                 }
-                .padding([.leading, .trailing], 16) // Ensure padding is added to leading and trailing sides
+                .padding(.horizontal)
             }
         }
-        .ignoresSafeArea(edges: .top)
+        .ignoresSafeArea(.container, edges: .top)
     }
 }
+
 
 /// A preview provider for the RecipesView.
 struct RecipesView_Previews: PreviewProvider {
