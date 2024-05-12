@@ -17,8 +17,14 @@ struct CategoriesView: View {
     
     
     func createCategoriesView() -> some View {
-        return VStack {
-            Text("Recipes")
+        return VStack(alignment: .leading) {
+            Text("Explore a selection of categories to find your recipes")
+                .font(.system(size: 15))
+                .fontWeight(.medium)
+                .opacity(0.7)
+                .foregroundColor(.black)
+                .padding([.leading, .trailing, .bottom])
+                .padding(.top, 10)
             List {
                 ForEach(Category.allCases) { category in
                     NavigationLink {
@@ -32,6 +38,7 @@ struct CategoriesView: View {
                     }
                     label: {
                         Text(getCategoryName(category))
+                            .padding([.top, .bottom], 10)
                     }
                     
                 }

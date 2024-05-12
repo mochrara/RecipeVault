@@ -9,6 +9,8 @@ struct RecipesView: View {
     // Title for the navigation bar
     let pageTitle = "My Recipes"
     
+    @State private var isShowingFormView = false
+    
     var body: some View {
         createRecipesView()
     }
@@ -24,6 +26,20 @@ struct RecipesView: View {
                 )
             }
             .navigationTitle(pageTitle)
+            .toolbar(content: {
+                ToolbarItem {
+                    Button(action: {
+                        isShowingFormView = true
+                    }) {
+                        Label("Add", systemImage: "plus")
+                            .labelStyle(.iconOnly)
+                            .frame(width: 50, height: 50) // Adjust frame if needed
+                    }
+                    .sheet(isPresented: $isShowingFormView) {
+                        RecipesFormView()
+                    }
+                }
+            })
         }
         .navigationViewStyle(.stack)
     }
