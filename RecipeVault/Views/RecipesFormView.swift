@@ -5,6 +5,8 @@ struct RecipesFormView: View {
     
     let pageTitle = "Create New Recipe"
     
+    @ObservedObject var recipeManager = RecipeViewModel.shared
+    
     @State private var recipeName: String = ""
     @State private var description: String = ""
     @State private var category: Category = Category.lunch
@@ -93,7 +95,7 @@ struct RecipesFormView: View {
             }
             ToolbarItem {
                 Button {
-                    // TO DO
+                    saveRecipe()
                     dismiss()
                 } label: {
                     Label("Submit", systemImage: "checkmark").labelStyle(.iconOnly)
@@ -173,6 +175,21 @@ struct RecipesFormView: View {
     /// - Returns: A Boolean value indicating whether the input is valid (true) or not (false).
     func isInputValid() -> Bool {
         return (recipeName.trimmingCharacters(in: .whitespaces)).isEmpty || (description.trimmingCharacters(in: .whitespaces)).isEmpty || ingredients.count <= 0 || method.count <= 0
+    }
+    
+    func saveRecipe() {
+        let newRecipe = Recipe(
+            name: recipeName,
+            img: (imageURL.isEmpty || URL(string: imageURL) == nil) ? " " : imageURL,
+            description: description,
+            ingredients: ingredients,
+            method: method,
+            timeToComplete: timeToComplete,
+            category: category.rawValue,
+            tutorialURL: tutorialURL,
+            isFavourite: false
+        )
+        recipeManager.saveRecipe(newRecipe)
     }
 
 }

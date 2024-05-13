@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD89137F2BF089710036F574 /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD89137E2BF089710036F574 /* RecipeViewModel.swift */; };
 		CDB05E2E2BED8C5300A4C5A4 /* RecipeVaultApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05E2D2BED8C5300A4C5A4 /* RecipeVaultApp.swift */; };
 		CDB05E302BED8C5300A4C5A4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05E2F2BED8C5300A4C5A4 /* MainView.swift */; };
 		CDB05E322BED8C5500A4C5A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDB05E312BED8C5500A4C5A4 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CD89137E2BF089710036F574 /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		CDB05E2A2BED8C5300A4C5A4 /* RecipeVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDB05E2D2BED8C5300A4C5A4 /* RecipeVaultApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeVaultApp.swift; sourceTree = "<group>"; };
 		CDB05E2F2BED8C5300A4C5A4 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -48,6 +50,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CD89137D2BF089520036F574 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				CD89137E2BF089710036F574 /* RecipeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		CDB05E212BED8C5300A4C5A4 = {
 			isa = PBXGroup;
 			children = (
@@ -69,6 +79,7 @@
 			children = (
 				CDB05E2D2BED8C5300A4C5A4 /* RecipeVaultApp.swift */,
 				CDB05E482BEDAA7A00A4C5A4 /* Models */,
+				CD89137D2BF089520036F574 /* ViewModel */,
 				CDB05E3B2BED8C9F00A4C5A4 /* Views */,
 				CDB05E312BED8C5500A4C5A4 /* Assets.xcassets */,
 				CDB05E332BED8C5500A4C5A4 /* Preview Content */,
@@ -184,6 +195,7 @@
 				CDB05E2E2BED8C5300A4C5A4 /* RecipeVaultApp.swift in Sources */,
 				CDB05E412BED8D0100A4C5A4 /* FavouriteRecipesView.swift in Sources */,
 				CDB05E432BED8D3B00A4C5A4 /* RecipesView.swift in Sources */,
+				CD89137F2BF089710036F574 /* RecipeViewModel.swift in Sources */,
 				CDB05E4A2BEDAA8700A4C5A4 /* Recipe.swift in Sources */,
 				CDB05E3D2BED8CDA00A4C5A4 /* CategoriesView.swift in Sources */,
 				CDB05E452BED8D5100A4C5A4 /* RecipesFormView.swift in Sources */,

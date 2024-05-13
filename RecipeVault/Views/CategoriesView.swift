@@ -6,11 +6,15 @@ import SwiftUI
 struct CategoriesView: View {
     
     let pageTitle = "Categories"
+    @ObservedObject var recipeManager = RecipeViewModel.shared
     
     var body: some View {
         NavigationView {
             createCategoriesView()
             .navigationTitle(pageTitle)
+            .onAppear {
+                recipeManager.loadRecipes()
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -30,7 +34,7 @@ struct CategoriesView: View {
                     NavigationLink {
                         ScrollView {
                             RecipesView().createRecipesGrid(
-                                recipes: Recipe.recipes.filter{ $0.category == getCategoryName(category)},
+                                recipes: recipeManager.recipes.filter{ $0.category == getCategoryName(category)},
                                 noRecipesMessage: "No recipes available for the '\(getCategoryName(category))' category."
                             )
                         }

@@ -10,6 +10,8 @@ struct RecipesView: View {
     let pageTitle = "My Recipes"
     
     @State private var isShowingFormView = false
+    @ObservedObject var recipeManager = RecipeViewModel.shared
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         createRecipesView()
@@ -21,11 +23,14 @@ struct RecipesView: View {
         return NavigationView {
             ScrollView {
                 createRecipesGrid(
-                    recipes: Recipe.recipes,
+                    recipes: recipeManager.recipes,
                     noRecipesMessage: "Add a new recipe by tapping the '+' button in the top right corner."
                 )
             }
             .navigationTitle(pageTitle)
+            .onAppear {
+                recipeManager.loadRecipes()
+            }
             .toolbar(content: {
                 ToolbarItem {
                     Button(action: {
@@ -283,6 +288,20 @@ struct RecipesView: View {
                                 }
                             }
                             Divider()
+                        }
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                recipeManager.deleteRecipe(byID: recipe.id)
+                                dismiss()
+                            }) {
+                                Text("Delete Recipe")
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .foregroundColor(.red)
+                                    .cornerRadius(8)
+                            }
+                            Spacer()
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
