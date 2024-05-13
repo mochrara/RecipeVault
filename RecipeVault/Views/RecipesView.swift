@@ -132,16 +132,18 @@ struct RecipesView: View {
                     .cornerRadius(8)
             }
             // Show an instruction to add recipes if none exist
-            if recipes.isEmpty {
-                HStack {
-                    Text(noRecipesMessage)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    .padding(.top, 20)
-                    Spacer()
-                }
-            } else {
+            HStack {
+                Text(noRecipesMessage)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                .padding(.top, 10)
+                Spacer()
+            }
+            if !recipes.isEmpty {
                 // Display a lazy grid of recipe cards
+                Divider()
+                    .padding(.top, 15)
+                    .padding(.horizontal, 2)
                 LazyVStack(spacing: 15) {
                     ForEach(filteredRecipes) { recipe in
                         NavigationLink(destination: createRecipeInfoView(recipe: recipe)) {
