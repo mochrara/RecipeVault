@@ -85,4 +85,12 @@ class RecipeViewModel: ObservableObject {
         UserDefaults.standard.removeObject(forKey: userDefaultsKey)
         // Note: We don't reset the hasLoadedSampleRecipesKey here to avoid reloading samples on next launch
     }
+    
+    func toggleFavourite(for recipe: Recipe) {
+        if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
+            recipes[index].isFavourite.toggle()
+            saveRecipesToUserDefaults()
+        }
+    }
+
 }

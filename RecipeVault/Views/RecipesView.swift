@@ -10,6 +10,7 @@ struct RecipesView: View {
     let pageTitle = "My Recipes"
     
     @State private var isShowingFormView = false
+    @State private var showDeleteAlert = false
     @ObservedObject var recipeManager = RecipeViewModel.shared
     @Environment(\.dismiss) var dismiss
     
@@ -122,10 +123,13 @@ struct RecipesView: View {
             }
             // Show an instruction to add recipes if none exist
             if recipes.isEmpty {
-                Text(noRecipesMessage)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                HStack {
+                    Text(noRecipesMessage)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
                     .padding(.top, 20)
+                    Spacer()
+                }
             } else {
                 // Display a lazy grid of recipe cards
                 LazyVStack(spacing: 15) {
@@ -289,27 +293,42 @@ struct RecipesView: View {
                             }
                             Divider()
                         }
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                recipeManager.deleteRecipe(byID: recipe.id)
-                                dismiss()
-                            }) {
-                                Text("Delete Recipe")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .foregroundColor(.red)
-                                    .cornerRadius(8)
-                            }
-                            Spacer()
-                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal)
             }
+            
         }
-        .ignoresSafeArea(.container, edges: .top)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    recipeManager.toggleFavourite(for: recipe)
+                }) {
+                    Image(systemName: recipe.isFavourite ? "heart.fill" : "heart")
+                        .foregroundColor(recipe.isFavourite ? .red : .primary)
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showDeleteAlert = true
+                }) {
+                    Image(systemName:"trash")
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(
+                title: Text("Delete Recipe"),
+                message: Text("Are you sure you want to delete this recipe?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    recipeManager.deleteRecipe(byID: recipe.id)
+                    dismiss()
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
 }
 
