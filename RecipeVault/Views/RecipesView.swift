@@ -11,6 +11,7 @@ struct RecipesView: View {
     
     @State private var isShowingFormView = false
     @State private var showDeleteAlert = false
+    @State private var searchText = ""
     @ObservedObject var recipeManager = RecipeViewModel.shared
     @Environment(\.dismiss) var dismiss
     
@@ -103,23 +104,32 @@ struct RecipesView: View {
     /// - Parameter recipes: An array of Recipe instances to display.
     /// - Returns: A view representing the grid of recipe cards.
     func createRecipesGrid(recipes: [Recipe], noRecipesMessage: String) -> some View {
+        let filteredRecipes = recipes.filter { recipe in
+            searchText.isEmpty || recipe.name.lowercased().contains(searchText.lowercased())
+        }
         return VStack {
-            HStack {
-                // Display count of recipes or a message if none are available
-                if recipes.isEmpty {
-                    Text("No recipes available")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .opacity(0.7)
-                        .foregroundColor(.black)
-                } else {
-                    Text("Showing \(recipes.count) \(recipes.count > 1 ? "recipes" : "recipe")")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .opacity(0.7)
-                        .foregroundColor(.black)
+            VStack {
+                HStack {
+                    // Display count of recipes or a message if none are available
+                    if filteredRecipes.isEmpty {
+                        Text("No recipes available")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .opacity(0.7)
+                            .foregroundColor(.black)
+                    } else {
+                        Text("Showing \(filteredRecipes.count) \(filteredRecipes.count > 1 ? "recipes" : "recipe")")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .opacity(0.7)
+                            .foregroundColor(.black)
+                    }
+                    Spacer()
                 }
-                Spacer()
+                TextField("Search Recipes", text: $searchText)
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
             }
             // Show an instruction to add recipes if none exist
             if recipes.isEmpty {
@@ -133,7 +143,7 @@ struct RecipesView: View {
             } else {
                 // Display a lazy grid of recipe cards
                 LazyVStack(spacing: 15) {
-                    ForEach(recipes) { recipe in
+                    ForEach(filteredRecipes) { recipe in
                         NavigationLink(destination: createRecipeInfoView(recipe: recipe)) {
                             createRecipeCard(recipe: recipe)
                         }
