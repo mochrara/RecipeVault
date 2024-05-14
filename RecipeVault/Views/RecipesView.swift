@@ -203,7 +203,7 @@ struct RecipesView: View {
                     // Displays the recipe title.
                     Text(recipe.name)
                         .font(.system(size: 24))
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.leading)
                         .foregroundColor(.black.opacity(1))
                         .bold()
                         .padding(.bottom, 15)

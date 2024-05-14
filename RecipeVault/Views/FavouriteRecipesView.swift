@@ -13,7 +13,7 @@ struct FavouriteRecipesView: View {
     /// Constructs the primary view with a navigation view.
     var body: some View {
         NavigationView {
-            
+            createFavouritesView()
         }
         .navigationViewStyle(.stack)  // Apply stack navigation style.
     }
