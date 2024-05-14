@@ -3,52 +3,53 @@ import SwiftUI
 
 
 
-/// A view that displays a collection of recipes.
+/// Displays a list of recipes and provides navigation to detailed views.
 struct RecipesView: View {
     
-    // Title for the navigation bar
     let pageTitle = "My Recipes"
-    
-    @State private var isShowingFormView = false
-    @State private var showDeleteAlert = false
-    @State private var searchText = ""
     @ObservedObject var recipeManager = RecipeViewModel.shared
+    @State var isShowingFormView = false
+    @State var searchText = ""
     @Environment(\.dismiss) var dismiss
     
+    
+    /// Constructs the primary view.
     var body: some View {
         createRecipesView()
     }
+    
     
     /// Creates the main view for the recipes, encapsulated in a navigation view.
     /// - Returns: A navigation view containing the recipe grid.
     func createRecipesView() -> some View {
         return NavigationView {
             ScrollView {
+                // Generates a grid of recipes with a message for adding new recipes.
                 createRecipesGrid(
                     recipes: recipeManager.recipes,
                     noRecipesMessage: "Add a new recipe by tapping the '+' button in the top right corner."
                 )
             }
-            .navigationTitle(pageTitle)
+            .navigationTitle(pageTitle) // Sets the navigation bar title.
             .onAppear {
-                recipeManager.loadRecipes()
+                recipeManager.loadRecipes() // Loads recipes when the view appears.
             }
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        isShowingFormView = true
+                        isShowingFormView = true // Shows the form to add a new recipe.
                     }) {
                         Label("Add", systemImage: "plus")
                             .labelStyle(.iconOnly)
-                            .frame(width: 50, height: 50) // Adjust frame if needed
+                            .frame(width: 50, height: 50)
                     }
                     .sheet(isPresented: $isShowingFormView) {
-                        RecipesFormView()
+                        RecipesFormView() // Presents the form view to add recipes.
                     }
                 }
-            })
+            }
         }
-        .navigationViewStyle(.stack)
+        .navigationViewStyle(.stack) // Sets the navigation view style.
     }
     
     
@@ -60,7 +61,7 @@ struct RecipesView: View {
         let cardTitleFontSize: CGFloat = 16
         let placeHolderImageSize: CGFloat = 60
         return ZStack(alignment: .bottomLeading) {
-            // Display recipe image or a placeholder if the image is not available
+            // Handles image loading with a placeholder if needed.
             if let imageUrl = URL(string: recipe.img) {
                 AsyncImage(url: imageUrl) { image in
                     image
@@ -77,7 +78,7 @@ struct RecipesView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            // Add a title strip on top of the image
+            // Adds a title strip over the image.
             createCardTitle(recipe.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.black.opacity(0.2))
@@ -110,7 +111,7 @@ struct RecipesView: View {
         return VStack {
             VStack {
                 HStack {
-                    // Display count of recipes or a message if none are available
+                    // Displays count of recipes or a message if none are available.
                     if filteredRecipes.isEmpty {
                         Text("No recipes available")
                             .font(.headline)
@@ -126,21 +127,22 @@ struct RecipesView: View {
                     }
                     Spacer()
                 }
+                // Search field for filtering recipes.
                 TextField("Search Recipes", text: $searchText)
                     .padding(10)
                     .background(Color(.systemGray6))
                     .cornerRadius(8)
             }
-            // Show an instruction to add recipes if none exist
+            // Instructional text displayed when no recipes are available.
             HStack {
                 Text(noRecipesMessage)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                .padding(.top, 10)
+                    .padding(.top, 10)
                 Spacer()
             }
             if !recipes.isEmpty {
-                // Display a lazy grid of recipe cards
+                // Displays a vertical stack of recipe cards.
                 Divider()
                     .padding(.top, 15)
                     .padding(.horizontal, 2)
@@ -156,22 +158,18 @@ struct RecipesView: View {
         }
         .padding(.horizontal)
     }
-    
+
     
     /// Creates a scrollable view displaying recipe details.
     /// - Parameter recipe: The recipe to display.
     /// - Returns: A view with the recipe's image, name, description, ingredients, and steps.
     func createRecipeInfoView(recipe: Recipe) -> some View {
-        return ScrollView { 
+        return ScrollView {
             VStack {
-                // image management
+                // Manages the display of the recipe's image.
                 if let imageUrl = URL(string: recipe.img) {
                     AsyncImage(url: imageUrl) { image in
-                        image
-                            .resizable()
-                            
-                            
-                            .clipped()
+                        image.resizable().clipped()
                     } placeholder: {
                         Image(systemName: "photo")
                             .resizable()
@@ -185,12 +183,12 @@ struct RecipesView: View {
                 }
                 VStack(alignment: .leading, spacing: 15) {
                     HStack {
-                        // category label
+                        // Displays the recipe category.
                         Text(recipe.category.uppercased())
                             .font(.system(size: 12))
                             .foregroundColor(.black.opacity(0.5))
                         Spacer()
-                        // time to complete
+                        // Shows time required to complete the recipe.
                         HStack {
                             Image(systemName: "clock")
                                 .resizable()
@@ -202,24 +200,23 @@ struct RecipesView: View {
                         }
                     }
                     .padding(.top, 15)
-                    // title
+                    // Displays the recipe title.
                     Text(recipe.name)
                         .font(.system(size: 24))
                         .multilineTextAlignment(.center)
                         .foregroundColor(.black.opacity(1))
                         .bold()
                         .padding(.bottom, 15)
-                    // recipe body info
+                    // Detailed section for recipe description, ingredients, and method.
                     VStack(alignment: .leading, spacing: 40) {
-                        // description
+                        // Description of the recipe.
                         Text(recipe.description)
                             .font(.system(size: 16))
                             .foregroundColor(.black.opacity(1))
                             .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
                         Divider()
-                            
-                        // ingredients section
+                        // List of ingredients.
                         VStack(alignment: .leading, spacing: 20) {
                             HStack {
                                 Image(systemName: "fork.knife.circle.fill")
@@ -230,6 +227,7 @@ struct RecipesView: View {
                                     .font(.headline)
                                     .bold()
                             }
+                            // Ingredients displayed in a formatted list.
                             VStack(alignment: .leading, spacing: 20) {
                                 ForEach(recipe.ingredients, id: \.self) { ingredient in
                                     HStack(alignment: .firstTextBaseline, spacing: 5) {
@@ -249,7 +247,7 @@ struct RecipesView: View {
                             }
                         }
                         Divider()
-                        // method section
+                        // Step-by-step method for preparing the recipe.
                         VStack(alignment: .leading, spacing: 20) {
                             HStack {
                                 Image(systemName: "list.bullet.circle.fill")
@@ -260,6 +258,7 @@ struct RecipesView: View {
                                     .font(.headline)
                                     .bold()
                             }
+                            // Method steps enumerated.
                             VStack(alignment: .leading, spacing: 20) {
                                 ForEach(Array(recipe.method.enumerated()), id: \.element) { index, step in
                                     HStack(alignment: .firstTextBaseline, spacing: 5) {
@@ -279,7 +278,7 @@ struct RecipesView: View {
                             }
                         }
                         Divider()
-                        // tutorial url (if exists)
+                        // Displays a link to a tutorial if provided.
                         if !recipe.tutorialURL.isEmpty, let url = URL(string: recipe.tutorialURL) {
                             VStack(alignment: .center, spacing: 10) {
                                 HStack {
@@ -310,44 +309,37 @@ struct RecipesView: View {
                 }
                 .padding(.horizontal)
             }
-            
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    recipeManager.toggleFavourite(for: recipe)
-                }) {
-                    Image(systemName: recipe.isFavourite ? "heart.fill" : "heart")
-                        .foregroundColor(recipe.isFavourite ? .red : .primary)
+            .toolbar {
+                // Toolbar items for managing recipe favorites and deletion.
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        recipeManager.toggleFavourite(for: recipe)
+                    }) {
+                        Image(systemName: recipe.isFavourite ? "heart.fill" : "heart")
+                            .foregroundColor(recipe.isFavourite ? .red : .primary)
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        recipeManager.showDeleteAlert = true
+                    }) {
+                        Image(systemName:"trash")
+                            .foregroundColor(.primary)
+                    }
                 }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showDeleteAlert = true
-                }) {
-                    Image(systemName:"trash")
-                        .foregroundColor(.primary)
-                }
+            .alert(isPresented: $recipeManager.showDeleteAlert) {
+                Alert(
+                    title: Text("Delete Recipe"),
+                    message: Text("Are you sure you want to delete this recipe?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        recipeManager.deleteRecipe(byID: recipe.id)
+                        dismiss()
+                    },
+                    secondaryButton: .cancel()
+                )
             }
         }
-        .alert(isPresented: $showDeleteAlert) {
-            Alert(
-                title: Text("Delete Recipe"),
-                message: Text("Are you sure you want to delete this recipe?"),
-                primaryButton: .destructive(Text("Delete")) {
-                    recipeManager.deleteRecipe(byID: recipe.id)
-                    dismiss()
-                },
-                secondaryButton: .cancel()
-            )
-        }
     }
-}
 
-
-/// A preview provider for the RecipesView.
-struct RecipesView_Previews: PreviewProvider {
-    static var previews: some View {
-        RecipesView()
-    }
 }

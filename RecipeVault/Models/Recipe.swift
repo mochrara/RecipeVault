@@ -16,16 +16,18 @@ struct Recipe: Identifiable, Codable {
     var category: Category.RawValue // The category of the recipe.
     var tutorialURL: String // URL to a tutorial for the recipe.
     var isFavourite: Bool // If the recipe is a favourite.
-    
-    /// Initializes a new Recipe instance.
+
+    /// Initializes a new Recipe instance with all necessary details.
     /// - Parameters:
     ///   - name: The name of the recipe.
     ///   - img: The image URL or name associated with the recipe.
     ///   - description: A brief description of the recipe.
     ///   - ingredients: Ingredients required for the recipe.
     ///   - method: Steps to prepare the recipe.
+    ///   - timeToComplete: The expected time to complete the recipe.
     ///   - category: The category of the recipe.
     ///   - tutorialURL: URL to a tutorial for the recipe.
+    ///   - isFavourite: Indicates if the recipe is marked as a favourite.
     init(name: String, img: String, description: String, ingredients: [String], method: [String], timeToComplete: Int, category: Category.RawValue, tutorialURL: String, isFavourite: Bool) {
         self.name = name
         self.img = img
@@ -37,5 +39,4 @@ struct Recipe: Identifiable, Codable {
         self.tutorialURL = tutorialURL
         self.isFavourite = isFavourite
     }
-    
 }

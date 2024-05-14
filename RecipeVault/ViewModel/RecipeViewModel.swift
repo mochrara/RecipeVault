@@ -1,13 +1,14 @@
 import Foundation
 import SwiftUI
 
+
+
+/// Manages the state and persistence of recipes in the application.
 class RecipeViewModel: ObservableObject {
     
     static let shared = RecipeViewModel()
     private let userDefaultsKey = "savedRecipes"
     private let hasLoadedSampleRecipesKey = "hasLoadedSampleRecipes"
-    
-    /// A static array containing all sample recipes.
     private let sampleRecipes: [Recipe] = [
         Recipe(
             name: "Basic Pancakes",
@@ -160,64 +161,81 @@ class RecipeViewModel: ObservableObject {
             isFavourite: false
         )
     ]
-    
+    @Published var showDeleteAlert: Bool = false
     @Published var recipes: [Recipe] = []
     
+    
+    /// Private initializer to enforce singleton pattern.
     private init() {
-        loadRecipes()
-    }
-    
-    func saveRecipe(_ recipe: Recipe) {
-        recipes.append(recipe)
-        saveRecipesToUserDefaults()
-    }
-    
-    func loadRecipes() {
-        if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
-           let savedRecipes = try? JSONDecoder().decode([Recipe].self, from: data) {
-            recipes = savedRecipes
-            print(recipes)
-        }
-        
-        // Check if recipes array is empty after loading
-        if recipes.isEmpty {
-            loadSampleRecipes()
-        }
-    }
-    
-    func deleteRecipe(byID id: UUID) {
-        if let index = recipes.firstIndex(where: { $0.id == id }) {
-            recipes.remove(at: index)
-            saveRecipesToUserDefaults()
-        }
-    }
-    
-    private func saveRecipesToUserDefaults() {
-        if let data = try? JSONEncoder().encode(recipes) {
-            UserDefaults.standard.set(data, forKey: userDefaultsKey)
-        }
-    }
-    
-    private func loadSampleRecipes() {
-        let hasLoadedSampleRecipes = UserDefaults.standard.bool(forKey: hasLoadedSampleRecipesKey)
-        if !hasLoadedSampleRecipes {
-            recipes = sampleRecipes
-            saveRecipesToUserDefaults()
-            UserDefaults.standard.set(true, forKey: hasLoadedSampleRecipesKey)
-        }
-    }
-    
-    func clearRecipes() {
-        recipes.removeAll()
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
-        // Note: We don't reset the hasLoadedSampleRecipesKey here to avoid reloading samples on next launch
-    }
-    
-    func toggleFavourite(for recipe: Recipe) {
-        if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
-            recipes[index].isFavourite.toggle()
-            saveRecipesToUserDefaults()
-        }
+       loadRecipes()
     }
 
+    
+    /// Saves a new recipe to the array and persists it to UserDefaults.
+    /// - Parameter recipe: The recipe to save.
+    func saveRecipe(_ recipe: Recipe) {
+       recipes.append(recipe)
+       saveRecipesToUserDefaults()
+    }
+
+    
+    /// Loads recipes from UserDefaults or loads sample recipes if none are found.
+    func loadRecipes() {
+       if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
+          let savedRecipes = try? JSONDecoder().decode([Recipe].self, from: data) {
+           recipes = savedRecipes
+       }
+       
+       // Load sample recipes if no recipes are loaded.
+       if recipes.isEmpty {
+           loadSampleRecipes()
+       }
+    }
+    
+
+    /// Deletes a recipe by its identifier.
+    /// - Parameter id: The UUID of the recipe to delete.
+    func deleteRecipe(byID id: UUID) {
+       if let index = recipes.firstIndex(where: { $0.id == id }) {
+           recipes.remove(at: index)
+           saveRecipesToUserDefaults()
+       }
+    }
+
+    
+    /// Encodes and saves the current array of recipes to UserDefaults.
+    private func saveRecipesToUserDefaults() {
+       if let data = try? JSONEncoder().encode(recipes) {
+           UserDefaults.standard.set(data, forKey: userDefaultsKey)
+       }
+    }
+
+    
+    /// Loads sample recipes into the application the first time it's launched.
+    private func loadSampleRecipes() {
+       let hasLoadedSampleRecipes = UserDefaults.standard.bool(forKey: hasLoadedSampleRecipesKey)
+       if !hasLoadedSampleRecipes {
+           recipes = sampleRecipes
+           saveRecipesToUserDefaults()
+           UserDefaults.standard.set(true, forKey: hasLoadedSampleRecipesKey)
+       }
+    }
+
+    
+    /// Clears all saved recipes from the application and UserDefaults.
+    func clearRecipes() {
+       recipes.removeAll()
+       UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+       // Note: We don't reset the hasLoadedSampleRecipesKey here to avoid reloading samples on next launch
+    }
+
+    
+    /// Toggles the favourite status of a given recipe.
+    /// - Parameter recipe: The recipe for which to toggle the favourite status.
+    func toggleFavourite(for recipe: Recipe) {
+       if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
+           recipes[index].isFavourite.toggle()
+           saveRecipesToUserDefaults()
+       }
+    }
 }
